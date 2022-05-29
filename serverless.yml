@@ -1,0 +1,50 @@
+service: serverlessSetup
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-west-1
+
+# functions
+functions:
+
+  getUser:
+    handler: src/functions/fetchUser.handler
+    events: # The events that trigger this function
+      - http: 
+          path: users
+          method: get
+
+  createUser:
+    handler: src/functions/createUser.handler
+    events: # The events that trigger this function
+      - http: 
+          path: users
+          method: post
+  deleteUser:
+    handler: src/functions/deleteUser.handler
+    events: # The events that trigger this function
+      - http: 
+          path: users
+          method: delete
+  updateUser:
+    handler: src/functions/updateUser.handler
+    events: # The events that trigger this function
+      - http: 
+          path: users
+          method: patch
+          
+# Serverless plugins
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+# Resources your functions use
+resources:
+  Resources:
+    # SNS Topics
+    SNSHelloEvent:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: Hello Event Topic
+        TopicName: hello-event
