@@ -13,7 +13,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
 		console.log(JSON.stringify(event.queryStringParameters, null, 4))
 
-        const userData: IUser | any = event.queryStringParameters;
+        const userData: IUser | any = event.queryStringParameters ?? {};
         
         console.log(userData)
 
@@ -29,8 +29,8 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         })
         if(!userRemove) {
             return {
-                statusCode: 400,
-                body: "User could not found"
+                statusCode: 404,
+                body: "User could not found!"
             }
         }
         else {

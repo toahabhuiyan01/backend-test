@@ -1,21 +1,36 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { AppDataSource, initializeDataSource } from './dbSrc/data-source';
-import { User } from './dbSrc/entity/User';
+import { IUser, User } from './dbSrc/entity/User';
 import "reflect-metadata"; 
+import api from "./openApi/openApiBackend";
 
 
-export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
 	try {
 		if(!AppDataSource.isInitialized)
             await AppDataSource.initialize();
 
+        const valid = await api.handleRequest(
+            {
+                method: event.httpMethod,
+                path: event.path,
+                body: event.body,
+                query: event.queryStringParameters,
+                headers: event.headers,
+            },
+            event,
+            context
+        );
+        console.log(valid, "-------------------");
+        console.log(event.queryStringParameters)
+
         const userRepo = AppDataSource.getRepository(User);
 
-		console.log(JSON.stringify(event.queryStringParameters, null, 4))
+		// console.log(JSON.stringify(event, null, 4))
 
         const userData = event.queryStringParameters;
         
-        console.log(userData)
+        // console.log(userData)
 
         if(!userData) {
             const users = await userRepo.find();

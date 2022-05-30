@@ -1,13 +1,27 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { AppDataSource, initializeDataSource } from './dbSrc/data-source';
 import { IUser, User } from './dbSrc/entity/User';
 import "reflect-metadata"; 
+import api from "./openApi/openApiBackend";
 
 
-export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
 	try {
 		if(!AppDataSource.isInitialized)
             await AppDataSource.initialize();
+
+            const valid = await api.handleRequest(
+                {
+                    method: event.httpMethod,
+                    path: event.path,
+                    body: event.body,
+                    query: event.queryStringParameters,
+                    headers: event.headers,
+                },
+                event,
+                context
+            );
+            console.log(valid, "-------------------");
 
         const userRepo = AppDataSource.getRepository(User);
 
@@ -29,7 +43,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         })
         if(!userUpdate) {
             return {
-                statusCode: 400,
+                statusCode: 404,
                 body: "User could not found!"
             }
         }

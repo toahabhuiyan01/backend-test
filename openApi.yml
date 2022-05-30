@@ -177,16 +177,19 @@ paths:
 components:
   schemas:
     fetchUser:
-      "type": "object"
-      "properties":
+      additionalProperties: true
+      required:
+        - ""
+      type: "object"
+      properties:
         id:
           type: "string"
-        phoneNumber:
+        phoneNumber: 
           type: "string"
     createUser:
-      "type": "object"
-      "required":
+      type: "object"
+      required:
         - "phoneNumber"
-      "properties":
+      properties:
         phoneNumber:
           type: "string"
