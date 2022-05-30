@@ -6,7 +6,7 @@ export class User {
     id: string
 
     @Column({ unique: true })
-    phone_no: string
+    phoneNo: string
 }
 
 export interface IUser {
