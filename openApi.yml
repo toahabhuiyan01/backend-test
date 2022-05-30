@@ -177,9 +177,7 @@ paths:
 components:
   schemas:
     fetchUser:
-      additionalProperties: true
-      required:
-        - ""
+      additionalProperties: false
       type: "object"
       properties:
         id:
