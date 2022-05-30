@@ -1,0 +1,192 @@
+openapi: 3.0.1
+info:
+  title: 'My API'
+  version: 1.0.0
+servers:
+- url: http://localhost:3000/dev/
+  description: Development server
+
+
+paths:
+  '/users':
+    get:
+      operationId: getUsers
+      summary: Fetches all user or specific user by id or phone number
+      parameters:
+        - in: query
+          name: query params
+          schema:
+            type: object
+            $ref: "#/components/schemas/fetchUser"
+      responses:
+        '200':
+          description: user response
+          content:
+            '*/*' :
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/fetchUser"
+                  - type: object
+                    $ref: "#/components/schemas/fetchUser"
+        '400':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: No user found!
+                type: string
+        '500':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: An error occured!
+                type: string
+    post:
+      operationId: createUser
+      summary: Create user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/createUser"
+              
+      responses:
+        '200':
+          description: user response
+          content:
+            '*/*' :
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/fetchUser"
+                  - type: object
+                    $ref: "#/components/schemas/fetchUser"
+        '400':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: Please provide phone number
+                type: string
+        '409':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: Phone number already exists
+                type: string
+        '500':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: An error occured!
+                type: string
+    patch:
+      operationId: updateUser
+      summary: Update all user or specific user by id and phone number
+      parameters:
+        - in: query
+          name: query params
+          schema:
+            type: object
+            $ref: "#/components/schemas/fetchUser"
+      responses:
+        '200':
+          description: user response
+          content:
+            '*/*' :
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/fetchUser"
+                  - type: object
+                    $ref: "#/components/schemas/fetchUser"
+        
+        '400':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: No user data provided!
+                type: string
+        '404':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: User could not found!
+                type: string
+        '500':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: An error occured!
+                type: string
+    delete:
+      operationId: deleteUser
+      summary: Update user by id and phone number
+      parameters:
+        - in: query
+          name: query params
+          schema:
+            type: object
+            $ref: "#/components/schemas/fetchUser"
+      responses:
+        '200':
+          description: user response
+          content:
+            '*/*' :
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/fetchUser"
+                  - type: object
+                    $ref: "#/components/schemas/fetchUser"
+        '400':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: No user data provided!
+                type: string
+        '404':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: User could not found!
+                type: string
+        '500':
+          description: user response
+          content:
+            '*/*':
+              schema:
+                default: An error occured!
+                type: string
+
+  
+components:
+  schemas:
+    fetchUser:
+      "type": "object"
+      "properties":
+        id:
+          type: "string"
+        phoneNumber:
+          type: "string"
+    createUser:
+      "type": "object"
+      "required":
+        - "phoneNumber"
+      "properties":
+        phoneNumber:
+          type: "string"
