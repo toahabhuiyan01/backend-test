@@ -14,10 +14,17 @@ paths:
       summary: Fetches all user or specific user by id or phone number
       parameters:
         - in: query
-          name: query params
+          name: id
+          description: None or one id
+          required: false
           schema:
-            type: object
-            $ref: "#/components/schemas/fetchUser"
+            type: string
+        - in: query
+          name: phoneNumber
+          description: user phoneNumber
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: user response
@@ -92,10 +99,17 @@ paths:
       summary: Update all user or specific user by id and phone number
       parameters:
         - in: query
-          name: query params
+          name: id
+          description: None or one id
+          required: true
           schema:
-            type: object
-            $ref: "#/components/schemas/fetchUser"
+            type: array
+        - in: query
+          name: phoneNumber
+          description: user phoneNumber
+          required: true
+          schema:
+            type: array
       responses:
         '200':
           description: user response
@@ -135,10 +149,17 @@ paths:
       summary: Update user by id and phone number
       parameters:
         - in: query
-          name: query params
+          name: id
+          description: None or one id
+          required: true
           schema:
-            type: object
-            $ref: "#/components/schemas/fetchUser"
+            type: array
+        - in: query
+          name: phoneNumber
+          description: user phoneNumber
+          required: true
+          schema:
+            type: array
       responses:
         '200':
           description: user response
@@ -177,16 +198,16 @@ paths:
 components:
   schemas:
     fetchUser:
-      "type": "object"
-      "properties":
+      type: "object"
+      properties:
         id:
           type: "string"
-        phoneNumber:
+        phoneNumber: 
           type: "string"
     createUser:
-      "type": "object"
-      "required":
+      type: "object"
+      required:
         - "phoneNumber"
-      "properties":
+      properties:
         phoneNumber:
           type: "string"

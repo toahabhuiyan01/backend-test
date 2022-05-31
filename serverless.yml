@@ -9,26 +9,26 @@ provider:
 functions:
 
   getUser:
-    handler: src/functions/fetchUser.handler
+    handler: src/functions/userManager.handler
     events: # The events that trigger this function
       - http: 
           path: users
           method: get
 
   createUser:
-    handler: src/functions/createUser.handler
+    handler: src/functions/userManager.handler
     events: # The events that trigger this function
       - http: 
           path: users
           method: post
   deleteUser:
-    handler: src/functions/deleteUser.handler
+    handler: src/functions/userManager.handler
     events: # The events that trigger this function
       - http: 
           path: users
           method: delete
   updateUser:
-    handler: src/functions/updateUser.handler
+    handler: src/functions/userManager.handler
     events: # The events that trigger this function
       - http: 
           path: users
