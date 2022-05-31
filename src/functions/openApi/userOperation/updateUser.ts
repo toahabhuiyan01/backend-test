@@ -4,11 +4,6 @@ import { AppDataSource } from '../../dbSrc/data-source';
 import { IUser, User } from '../../dbSrc/entity/User';
 import readQueryReadUser from '../utils/readQueryReadUser';
 
-
-interface userbyid {
-    [key: string]: string;
-}
-
 export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => {
     try {
         const {usersToFetch, userById, error} = await readQueryReadUser(c);
