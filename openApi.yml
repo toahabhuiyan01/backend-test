@@ -149,10 +149,17 @@ paths:
       summary: Update user by id and phone number
       parameters:
         - in: query
-          name: query params
+          name: id
+          description: None or one id
+          required: true
           schema:
-            type: object
-            $ref: "#/components/schemas/fetchUser"
+            type: array
+        - in: query
+          name: phoneNumber
+          description: user phoneNumber
+          required: true
+          schema:
+            type: array
       responses:
         '200':
           description: user response
