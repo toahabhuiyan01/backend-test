@@ -103,13 +103,13 @@ paths:
           description: None or one id
           required: true
           schema:
-            type: string
+            type: array
         - in: query
           name: phoneNumber
           description: user phoneNumber
           required: true
           schema:
-            type: string
+            type: array
       responses:
         '200':
           description: user response
