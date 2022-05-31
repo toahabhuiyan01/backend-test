@@ -43,9 +43,10 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
             where: userBulkData
         });
 
+
         if(usersUpdate) {
-            usersUpdate.map((user: User) => {
-                user.id = userById[user.id];
+            usersUpdate.map((user: User, idx: number) => {
+                usersUpdate[idx].phone_no = userById[user.id];
             });
 
             await userRepo.save(usersUpdate);
