@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import * as Lambda from 'aws-lambda';
-import { AppDataSource } from '../dbSrc/data-source';
-import { IUser, User } from '../dbSrc/entity/User';
+import { AppDataSource } from '../../dbSrc/data-source';
+import { IUser, User } from '../../dbSrc/entity/User';
 import { QueryFailedError } from 'typeorm';
 import { nanoid } from 'nanoid';
 

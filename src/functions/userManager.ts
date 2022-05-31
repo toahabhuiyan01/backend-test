@@ -1,6 +1,4 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
-import { AppDataSource, initializeDataSource } from './dbSrc/data-source';
-import { IUser, User } from './dbSrc/entity/User';
 import "reflect-metadata"; 
 import api from "./openApi/openApiBackend";
 

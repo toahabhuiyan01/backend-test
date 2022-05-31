@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import * as Lambda from 'aws-lambda';
-import { AppDataSource } from '../dbSrc/data-source';
-import { User } from '../dbSrc/entity/User';
+import { AppDataSource } from '../../dbSrc/data-source';
+import { User } from '../../dbSrc/entity/User';
 
 
 

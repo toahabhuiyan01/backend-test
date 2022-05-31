@@ -1,9 +1,10 @@
 import 'source-map-support/register';
 import * as Lambda from 'aws-lambda';
 import OpenAPIBackend from 'openapi-backend';
-import updateUser from './updateUser';
-import fetchUser from './fetchUser';
-import createUser from './createUser';
+import updateUser from './userOperation/updateUser';
+import fetchUser from './userOperation/fetchUser';
+import createUser from './userOperation/createUser';
+import deleteUser from './userOperation/deleteUser';
 const headers = {
   'content-type': '*/*',
   'access-control-allow-origin': '*', // lazy cors config
@@ -29,11 +30,7 @@ api.register({
     getUsers: fetchUser,
     createUser: createUser,
     updateUser: updateUser,
-    deleteUser: async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => ({
-        statusCode: 200,
-        body: JSON.stringify({ operationId: c.operation.operationId }),
-        headers,
-    }),
+    deleteUser: deleteUser,
 });
 
 export default api;
