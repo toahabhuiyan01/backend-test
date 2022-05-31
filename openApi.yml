@@ -35,8 +35,6 @@ paths:
                   - type: array
                     items:
                       $ref: "#/components/schemas/fetchUser"
-                  - type: object
-                    $ref: "#/components/schemas/fetchUser"
         '400':
           description: user response
           content:
@@ -71,8 +69,6 @@ paths:
                   - type: array
                     items:
                       $ref: "#/components/schemas/fetchUser"
-                  - type: object
-                    $ref: "#/components/schemas/fetchUser"
         '400':
           description: user response
           content:
@@ -116,34 +112,42 @@ paths:
           content:
             '*/*' :
               schema:
-                oneOf:
-                  - type: array
+                properties:
+                  message:
+                    type: string
+                    default: User data updated successfully
+                  updated:
+                    type: array
                     items:
                       $ref: "#/components/schemas/fetchUser"
-                  - type: object
-                    $ref: "#/components/schemas/fetchUser"
         
         '400':
           description: user response
           content:
             '*/*':
               schema:
-                default: No user data provided!
-                type: string
+                properties:
+                  message:
+                    type: string
+                    default: Please provide same amount of user information.
         '404':
           description: user response
           content:
             '*/*':
               schema:
-                default: User could not found!
-                type: string
+                properties:
+                  message:
+                    type: string
+                    default: No user found with provided user
         '500':
           description: user response
           content:
             '*/*':
               schema:
-                default: An error occured!
-                type: string
+                properties:
+                  message:
+                    type: string
+                    default: An error occured
     delete:
       operationId: deleteUser
       summary: Update user by id and phone number
@@ -166,33 +170,41 @@ paths:
           content:
             '*/*' :
               schema:
-                oneOf:
-                  - type: array
+                properties:
+                  message:
+                    type: string
+                    default: Users Deleted Successfully
+                  deleted:
+                    type: array
                     items:
                       $ref: "#/components/schemas/fetchUser"
-                  - type: object
-                    $ref: "#/components/schemas/fetchUser"
         '400':
           description: user response
           content:
             '*/*':
               schema:
-                default: No user data provided!
-                type: string
+                properties:
+                  message:
+                    type: string
+                    default: Please provide same amount of user information.
         '404':
           description: user response
           content:
             '*/*':
               schema:
-                default: User could not found!
-                type: string
+                properties:
+                  message:
+                    type: string
+                    default: No user found with provided user
         '500':
           description: user response
           content:
             '*/*':
               schema:
-                default: An error occured!
-                type: string
+                properties:
+                  message:
+                    type: string
+                    default: An error occured
 
   
 components:

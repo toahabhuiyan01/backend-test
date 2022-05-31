@@ -75,7 +75,9 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
         console.log(err)
         return {
             statusCode: 500,
-            body: 'An error occured',
+            body: JSON.stringify({
+                message: 'An error occured'
+            }),
         };
     }
 }

@@ -37,7 +37,7 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
         if(user) {
             response = {
                 statusCode: 200,
-                body: JSON.stringify(user),
+                body: JSON.stringify([user]),
             };
         }
         else {
