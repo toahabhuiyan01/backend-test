@@ -131,11 +131,43 @@ api.register({
             };
         }
     },
-    updateUser: async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => ({
-        statusCode: 200,
-        body: JSON.stringify({ operationId: c.operation.operationId }),
-        headers,
-    }),
+    updateUser: async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => {
+        try {
+            if(!AppDataSource.isInitialized)
+                await AppDataSource.initialize();
+    
+            const userRepo = AppDataSource.getRepository(User);
+    
+            const userData: IUser | any = event.queryStringParameters;
+    
+            const userUpdate = await userRepo.findOneBy({
+                id: userData.id
+            })
+            if(!userUpdate) {
+                return {
+                    statusCode: 404,
+                    body: "User could not found!"
+                }
+            }
+            else {
+                userUpdate.id = userData.id;
+                userUpdate.phone_no = userData.phoneNumber;
+                
+                await userRepo.save(userUpdate);
+            }
+    
+            return {
+                statusCode: 200,
+                body: "Users updated successfully!"
+            }
+        } catch (err) {
+            console.log(err)
+            return {
+                statusCode: 500,
+                body: 'An error occured',
+            };
+        }
+    },
     deleteUser: async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => ({
         statusCode: 200,
         body: JSON.stringify({ operationId: c.operation.operationId }),
