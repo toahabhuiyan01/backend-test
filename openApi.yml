@@ -158,12 +158,6 @@ paths:
           required: true
           schema:
             type: array
-        - in: query
-          name: phoneNumber
-          description: user phoneNumber
-          required: true
-          schema:
-            type: array
       responses:
         '200':
           description: user response

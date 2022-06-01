@@ -2,29 +2,30 @@ import 'source-map-support/register';
 import * as Lambda from 'aws-lambda';
 import { AppDataSource } from '../../dbSrc/data-source';
 import { IUser, User } from '../../dbSrc/entity/User';
-import readQueryReadUser from '../utils/readQueryReadUser';
 
 export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => {
     try {
-        const {usersToFetch, userById, error} = await readQueryReadUser(c);
-
-        if(error) {
-            return error;
-        }
+        if(!AppDataSource.isInitialized)
+            await AppDataSource.initialize();
 
         const userRepo = AppDataSource.getRepository(User);
+        const receivedIds = c.request.query.id.split(",");
+        let userBulkData: IUser[] = [];
 
-        if(usersToFetch) {
-            let userToDelete: User[] = [];
+        for (let i = 0; i < receivedIds.length; i++) {
+            if(receivedIds[i]) {
+                userBulkData.push({id: receivedIds[i]});
+            }
+        }
 
-            usersToFetch.map((user: User) => {
-                if(user.phone_no === userById[user.id]) {
-                    userToDelete.push(user);
-                }
-            });
+        const userToDelete: User[] = await userRepo.find({
+            where: userBulkData
+        });
 
-            await userRepo.remove(userToDelete);
-            
+
+        if(userToDelete) {
+            const removed = await userRepo.remove(userToDelete);
+
             return {
                 statusCode: 200,
                 body: JSON.stringify({
@@ -37,7 +38,7 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
             return {
                 statusCode: 404,
                 body: JSON.stringify({
-                    message: "No user found with provided user"
+                    message: "No user found with provided users"
                 })
             }
         }
