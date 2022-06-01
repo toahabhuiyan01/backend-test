@@ -14,6 +14,8 @@ describe('serverless framework example', () => {
 
   const numberOfUsers = 5;
 
+  let beforeUserCreated: any;
+
   beforeAll(async () => {
     client = axios.create({ baseURL: 'http://localhost:3000', validateStatus: () => true });
     start = spawn('npm.cmd', ['run', "dev"], { cwd: __dirname, detached: true });
@@ -24,7 +26,7 @@ describe('serverless framework example', () => {
   // afterAll(() => process.kill(start.pid));
 
   test('GET /dev/users returns 200 with array of all users', async () => {
-    const beforeCreated = await client.get('/dev/users');
+    beforeUserCreated = await client.get('/dev/users');
     
     const promises = [...Array(numberOfUsers)].map(async () => {
       const phoneNumber = nanoid(11);
@@ -34,9 +36,9 @@ describe('serverless framework example', () => {
     })
     await Promise.all(promises);
 
-    const afterCreated = await client.get('/dev/users');
+    const afterUserCreated = await client.get('/dev/users');
 
-    const expected = afterCreated.data.length - beforeCreated.data.length - userIds.length;
+    const expected = afterUserCreated.data.length - beforeUserCreated.data.length - userIds.length;
 
     expect(expected).toBe(0);
     expect(userIds.length).toBe(numberOfUsers);
@@ -56,8 +58,18 @@ describe('serverless framework example', () => {
 
   test('DELETE dev/users returns 200 after delete that user', async () => {
     const res = await client.delete(`/dev/users?id=${userIds.join(",")}`);
+    const {deleted} = res.data;
+    let deleted_len = 0;
+    deleted.map(user => {
+      if(phoneNumbers.includes(user.phone_no)) deleted_len++;
+    })
     expect(res.status).toBe(200);
-    expect(res.data.deleted.length).toBe(5);
+    expect(deleted_len).toBe(5);
+  });
+
+  test('GET /dev/users returns 200 with array of all users now test, the data is consistent or not', async () => {
+    const res = await client.get('/dev/users');
+    expect(res.data.length).toBe(beforeUserCreated.data.length);
   });
 
   test('PATCH /dev/users returns 400 as no query params was given', async () => {
