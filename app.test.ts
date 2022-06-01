@@ -53,7 +53,7 @@ describe('serverless framework example', () => {
   test('PATCH /dev/users returns 200 as no query params was given', async () => {
     const res = await client.patch(`/dev/users?id=${userIds.join(",")}&phoneNumber=${phoneNumbers.join(",")}`);
     expect(res.status).toBe(200);
-    expect(res.data.updated.length).toBe(5);
+    expect(res.data.updated.length).toBe(numberOfUsers);
   });
 
   test('DELETE dev/users returns 200 after delete that user', async () => {
@@ -64,7 +64,7 @@ describe('serverless framework example', () => {
       if(phoneNumbers.includes(user.phone_no)) deleted_len++;
     })
     expect(res.status).toBe(200);
-    expect(deleted_len).toBe(5);
+    expect(deleted_len).toBe(numberOfUsers);
   });
 
   test('GET /dev/users returns 200 with array of all users now test, the data is consistent or not', async () => {
