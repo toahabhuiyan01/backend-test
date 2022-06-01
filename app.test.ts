@@ -38,7 +38,7 @@ describe('serverless framework example', () => {
 
   });
 
-  test('PATCH /dev/users returns 200 as no query params was given', async () => {
+  test('PATCH /dev/users returns 400 as to update data without phone', async () => {
     const res = await client.patch(`/dev/users?id=${ids.join(",")}`);
     expect(res.status).toBe(400);
   });
