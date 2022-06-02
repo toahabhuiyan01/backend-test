@@ -1,80 +1,120 @@
-import { spawn, ChildProcess } from 'child_process';
-import axios, { AxiosInstance } from 'axios';
-import waitOn from 'wait-on';
-import { nanoid } from 'nanoid';
+import app from "../dist/index";
+const request = require("supertest");
+import { describe, expect, test } from '@jest/globals'
+import { nanoid } from "nanoid";
 
-jest.setTimeout(15000);
 
-describe('serverless framework example', () => {
-  let start: ChildProcess;
-  let client: AxiosInstance;
+describe("test", () => {
 
-  let userIds: any = [];
-  let phoneNumbers: any = [];
+	test("Create User and check if created or not.", async () => {
+		const phoneNumber = nanoid(11);
+		const user = await request(app).post('/users').send({phoneNumber});
 
-  const numberOfUsers = 5;
+		const userAfter = await request(app).get(`/users?id=${user.body.body.user.id}`);
 
-  let beforeUserCreated: any;
+		expect(user.body.statusCode).toBe(201);
 
-  beforeAll(async () => {
-    client = axios.create({ baseURL: 'http://localhost:3000', validateStatus: () => true });
-    start = spawn('npm.cmd', ['run', "dev"], { cwd: __dirname, detached: true });
-    console.log(start)
-    await waitOn({ resources: ['tcp:localhost:3000'] });
-  });
+		expect(user.body.body.user.phone_no).toBe(userAfter.body.body[0].phone_no);
+	})
 
-  // afterAll(() => process.kill(start.pid));
+	test("Create a user and update that user and check if it is updated", async () => {
+		const phoneNumber = nanoid(11);
+		const phoneNumberUp = nanoid(11);
+		const user = await request(app).post('/users').send({phoneNumber});
 
-  test('GET /dev/users returns 200 with array of all users', async () => {
-    beforeUserCreated = await client.get('/dev/users');
-    
-    const promises = [...Array(numberOfUsers)].map(async () => {
-      const phoneNumber = nanoid(11);
-      const user = await client.post('/dev/users', {phoneNumber});
-      userIds.push(user.data.user.id);
-      phoneNumbers.push(user.data.user.phone_no);
-    })
-    await Promise.all(promises);
+		const userAfter = await request(app)
+							.patch(`/users`)
+							.query({
+								id: user.body.body.user.id,
+								phoneNumber: phoneNumberUp
+							});
+		// console.log(userAfter.body.body)
+		expect(phoneNumberUp).toStrictEqual(userAfter.body.body.updated[0].phone_no);
+	})
 
-    const afterUserCreated = await client.get('/dev/users');
+	test("Create user and delete user and check if its deleted or not", async () => {
+		const phoneNumber = nanoid(11);
+		const user = await request(app).post('/users').send({phoneNumber});
 
-    const expected = afterUserCreated.data.length - beforeUserCreated.data.length - userIds.length;
+		const userAfter = await request(app)
+							.delete(`/users`)
+							.query({
+								id: user.body.body.user.id
+							});
+		expect(phoneNumber).toStrictEqual(userAfter.body.body.deleted[0].phone_no);
+	})
 
-    expect(expected).toBe(0);
-    expect(userIds.length).toBe(numberOfUsers);
+	test("Created multiple users and check if users updated", async () => {
+		const numberOfUsers = 5;
+		let userIds: any = [];
+		let phoneNumbers: any = [];
 
-  });
+		const promisesBeforeCreate = [...Array(numberOfUsers)].map(async () => {
+			const phoneNumber = nanoid(11);
+			const user = await request(app).post('/users').send({phoneNumber});
+			expect(user.body.statusCode).toBe(201)
+			console.log(user.body);
+			userIds.push(user.body.body.user.id);
+			phoneNumbers.push(user.body.body.user.phone_no);
+		})
+		await Promise.all(promisesBeforeCreate);
 
-  test('PATCH /dev/users returns 400 as to update data without phone', async () => {
-    const res = await client.patch(`/dev/users?id=${userIds.join(",")}`);
-    expect(res.status).toBe(400);
-  });
+		const updatedPhones: any = [];
+		[...Array(numberOfUsers)].map(async () => {
+			const phoneNumber = nanoid(11);
+			updatedPhones.push(phoneNumber);
+		})
+		
+		const updatedUsers = await request(app)
+							.patch("/users")
+							.query({
+								id: userIds.join(","), 
+								phoneNumber: updatedPhones.join(",")
+							})
+		let updatedUserCount: number = 0;
 
-  test('PATCH /dev/users returns 200 as no query params was given', async () => {
-    const res = await client.patch(`/dev/users?id=${userIds.join(",")}&phoneNumber=${phoneNumbers.join(",")}`);
-    expect(res.status).toBe(200);
-    expect(res.data.updated.length).toBe(numberOfUsers);
-  });
+		updatedUsers.body.body.updated.map(user => {
+			if(userIds.includes(user.id))
+				updatedUserCount++;
+		})
 
-  test('DELETE dev/users returns 200 after delete that user', async () => {
-    const res = await client.delete(`/dev/users?id=${userIds.join(",")}`);
-    const {deleted} = res.data;
-    let deleted_len = 0;
-    deleted.map(user => {
-      if(phoneNumbers.includes(user.phone_no)) deleted_len++;
-    })
-    expect(res.status).toBe(200);
-    expect(deleted_len).toBe(numberOfUsers);
-  });
+		expect(updatedUserCount).toBe(numberOfUsers);
+	})
 
-  test('GET /dev/users returns 200 with array of all users now test, the data is consistent or not', async () => {
-    const res = await client.get('/dev/users');
-    expect(res.data.length).toBe(beforeUserCreated.data.length);
-  });
+	test("Create multiple users and check users deleted or not.", async () => {
+		const numberOfUsers = 5;
+		let userIds: any = [];
+		let phoneNumbers: any = [];
 
-  test('PATCH /dev/users returns 400 as no query params was given', async () => {
-    const res = await client.patch('/dev/users');
-    expect(res.status).toBe(400);
-  });
+		const promisesBeforeCreate = [...Array(numberOfUsers)].map(async () => {
+			const phoneNumber = nanoid(11);
+			const user = await request(app).post('/users').send({phoneNumber});
+			expect(user.body.statusCode).toBe(201)
+			console.log(user.body);
+			userIds.push(user.body.body.user.id);
+			phoneNumbers.push(user.body.body.user.phone_no);
+		})
+		await Promise.all(promisesBeforeCreate);
 
-});
+		const updatedPhones: any = [];
+		[...Array(numberOfUsers)].map(async () => {
+			const phoneNumber = nanoid(11);
+			updatedPhones.push(phoneNumber);
+		})
+		
+		const updatedUsers = await request(app)
+							.delete("/users")
+							.query({
+								id: userIds.join(",")
+							})
+		let deletedUserCount: number = 0;
+
+		updatedUsers.body.body.deleted.map(user => {
+			if(phoneNumbers.includes(user.phone_no))
+				deletedUserCount++;
+		})
+
+		expect(deletedUserCount).toBe(numberOfUsers);
+	})
+
+})
