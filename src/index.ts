@@ -17,4 +17,5 @@ app.use(async (req, res) => {
 // start server
 app.listen(9000, () => console.info('api listening at http://localhost:9000'));
 
-module.exports = app;
+// exports.default = app;
+export default app;
