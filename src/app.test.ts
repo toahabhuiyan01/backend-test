@@ -1,5 +1,5 @@
 import app from "../dist/index";
-const request = require("supertest");
+import request from "supertest";
 import { describe, expect, test } from '@jest/globals'
 import { nanoid } from "nanoid";
 
