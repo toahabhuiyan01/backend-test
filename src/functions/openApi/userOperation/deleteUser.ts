@@ -28,18 +28,18 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
 
             return {
                 statusCode: 200,
-                body: JSON.stringify({
+                body: {
                     message: "Users Deleted Successfully",
                     deleted: userToDelete
-                })
+                }
             }
         }
         else {
             return {
                 statusCode: 404,
-                body: JSON.stringify({
+                body: {
                     message: "No user found with provided users"
-                })
+                }
             }
         }
 
@@ -47,9 +47,9 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
         console.log(err)
         return {
             statusCode: 500,
-            body: JSON.stringify({
+            body: {
                 message: 'An error occured'
-            }),
+            },
         };
     }
 }

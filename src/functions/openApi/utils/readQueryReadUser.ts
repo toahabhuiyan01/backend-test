@@ -22,9 +22,9 @@ export default async (c) => {
         if(userIds?.length !== userPhones?.length) {
             const error = {
                 statusCode: 400,
-                body: JSON.stringify({
+                body: {
                     message: "Please provide same amount of user information."
-                })
+                }
             }
             return {error};
         }

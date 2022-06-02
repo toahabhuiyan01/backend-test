@@ -8,6 +8,8 @@ import { nanoid } from 'nanoid';
 
 
 export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => {
+    console.log(c.request);
+    
     try {
         if(!AppDataSource.isInitialized)
             await AppDataSource.initialize();
@@ -15,7 +17,7 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
         const userRepo = AppDataSource.getRepository(User);
 
 
-        const userData: IUser = JSON.parse(c.request.body || "");
+        const userData: IUser = c.request.body || JSON.parse(c.request.body || "");
         
         console.log(userData)
 
@@ -29,10 +31,10 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
         
         return {
                 statusCode: 201,
-                body: JSON.stringify({
+                body: {
                     message: "user created!",
                     user: user
-                }),
+                },
             };
     } catch (err) {
 

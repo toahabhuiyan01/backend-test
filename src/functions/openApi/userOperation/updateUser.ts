@@ -23,18 +23,18 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
             
             return {
                 statusCode: 200,
-                body: JSON.stringify({
+                body: {
                     message: "Users Updated Successfully",
                     updated: usersToFetch
-                })
+                }
             }
         }
         else {
             return {
                 statusCode: 404,
-                body: JSON.stringify({
+                body: {
                     message: "No user found with provided user"
-                })
+                }
             }
         }
 

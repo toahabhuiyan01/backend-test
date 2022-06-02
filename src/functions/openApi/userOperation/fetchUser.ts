@@ -6,7 +6,7 @@ import { User } from '../../dbSrc/entity/User';
 
 
 export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => {
-    console.log(c);
+    console.log(`getUser`);
 
     try {
         if(!AppDataSource.isInitialized)
@@ -20,7 +20,7 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
             const users = await userRepo.find();
             return {
                 statusCode: 200,
-                body: JSON.stringify(users)
+                body: users
             }
         }
 
@@ -37,7 +37,7 @@ export default async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Con
         if(user) {
             response = {
                 statusCode: 200,
-                body: JSON.stringify([user]),
+                body: [user],
             };
         }
         else {

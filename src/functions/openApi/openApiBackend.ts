@@ -16,14 +16,14 @@ const api = new OpenAPIBackend({ definition: 'openApi.yml', quick: true });
 api.register({
     notFound: async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => ({
         statusCode: 404,
-        body: JSON.stringify({ err: 'not found' }),
+        body: { err: 'not found' },
         headers,
     }),
     validationFail: async (c, event: Lambda.APIGatewayProxyEvent, context: Lambda.Context) => {
-        console.log(c.request);
+        // console.log(c.request);
         return {
             statusCode: 400,
-            body: JSON.stringify({ err: c.validation.errors }),
+            body: { err: c.validation.errors },
             headers,
         }
     },
